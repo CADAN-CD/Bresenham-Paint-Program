@@ -1,0 +1,8 @@
+.vs/
+.vs/
+*pch
+*ipch
+.vs/
+*.pch
+*.ipch
+*.exe
