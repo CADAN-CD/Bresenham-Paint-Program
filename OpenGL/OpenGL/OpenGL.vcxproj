@@ -144,6 +144,7 @@
     <ClCompile Include="..\code\main.cpp" />
     <ClCompile Include="Bresenham.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="mouse_Callback.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="..\Libraries\include\include\glad\glad.h" />
     <ClInclude Include="..\Libraries\include\include\KHR\khrplatform.h" />
     <ClInclude Include="bresenham.h" />
+    <ClInclude Include="mouse_Callback.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
