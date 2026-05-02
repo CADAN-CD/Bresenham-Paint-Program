@@ -79,6 +79,22 @@ int main()
 	// we acumulate all the point lines in a single vector, so we can upload it to the GPU in one call
 	std::vector<float> allPts;
 
+	//CIRCLE 
+	std::vector<float> circle = CircleMidPoint(400, 400, 50, w, h);
+	//acumulate the points of the circle in the vector of all points, so we can upload it to the GPU in one call
+	allPts.insert(allPts.end(), circle.begin(), circle.end());
+	
+	// we bind the VAO 
+	glBindVertexArray(VAO1);
+	//we bind the buffer for the VAO, who is going to tell how to interpret the data
+	glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+	// we upload the data of the CPU to the GPU
+	glBufferData(GL_ARRAY_BUFFER, allPts.size() * sizeof(float), allPts.data(), GL_DYNAMIC_DRAW);
+	//unbind for safety:) bc we already save the configurations
+	glBindVertexArray(0);
+	//we divide in two because we're using a pair of coordinates
+	g_linePointCount = (GLsizei)(allPts.size() / 2);
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 
@@ -106,6 +122,8 @@ int main()
 			g_linePointCount = (GLsizei)(allPts.size() / 2);
 			// we are not ready to draw the line anymore, we need a new pair of points
 			g_lineReady = false;
+
+			g_linePointCount = (GLsizei)(allPts.size() / 2);
 		}
 
 		// we clear the points if the user presses the D key 
