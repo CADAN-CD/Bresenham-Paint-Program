@@ -18,6 +18,7 @@ using namespace std;
 int main()
 {
 
+
 	bool open = true;
 
 	//1. initialize GLFW
@@ -77,6 +78,10 @@ int main()
 	//atribute 1 : the color (r, g, b)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	//atribute 2 : the size of the point
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
 	//unbind
 	glBindVertexArray(0);
 	//counter of points to draw
@@ -95,7 +100,7 @@ int main()
 	//unbind for safety:) bc we already save the configurations
 	glBindVertexArray(0);
 	//we divide in two because we're using a pair of coordinates
-	linePointCount = (GLsizei)(allPts.size() / 2);
+	linePointCount = (GLsizei)(allPts.size() / 5);
 
 	//ImGui setup
 	IMGUI_CHECKVERSION();
@@ -114,6 +119,7 @@ int main()
 		//variables to control the state of the line and circle drawing modes and global variables related to the mouse position and the viewport position
 	static bool  waitingSecondClick = false;
 	static bool  waitingCircleRadius = false;
+		//variables to store the center of the circle and the two points of the line
 	static float circleCx, circleCy;
 	static float mouseX1, mouseY1;
 	static float mouseX2, mouseY2;
@@ -121,9 +127,14 @@ int main()
 		//ImGui color propierties for the fragment shader
 	//initial color white 
 	static float drawColor[3] = { 1.0f, 1.0f, 1.0f };
-
+	//initial size of the points
+	static float pointSize = 2.0f;
+	// we enable the GL_PROGRAM_POINT_SIZE to be able to change
+	// the point size in the shader with the glPointSize function
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	// takes all the generated points and adds the actual color to the vector 
 	auto insertWithColor = [&](std::vector<float>& shape) {
-		
+	
 		for (int i = 0; i < shape.size(); i += 2) {
 			allPts.push_back(shape[i]);       // x
 			allPts.push_back(shape[i + 1]);   // y
@@ -148,15 +159,17 @@ int main()
 					//ImGui color editor 
 		ImGui::ColorEdit3("Color", drawColor);
 		shaderProgram.Activate();
+					//ImGui point size slider
+		ImGui::SliderFloat("Point Size", &pointSize, 1.0f, 10.0f);
 
-		// Busca la ubicación del uniform en el shader
+
+		// searches the location of the variable uColor in the fragment shader and sets its value to 
+		// the current color selected in the ImGui color editor
+		//variable to store the location of the uniform variable uColor in the shader
 		int colorLoc = glGetUniformLocation(shaderProgram.ID, "uColor");
+		//the color is sent to the GPU as 3 floats (r, g, b) like { 1.0f, 1.0f, 1.0f };
 		glUniform3f(colorLoc, drawColor[0], drawColor[1], drawColor[2]);
 
-		if (linePointCount > 0) {
-			glBindVertexArray(VAO1);
-			glDrawArrays(GL_POINTS, 0, linePointCount);
-		}
 				// clear the canvas call
 		if(ImGui::Button("Clear Canvas"))
 		{
@@ -177,41 +190,61 @@ int main()
 		}
 				
 
-		
+		//im Gui uses pixel coordinates begining in the top left corner and y increases downwards
+		//while openGl uses normalized coordinates begining in the center of the screen and y increases upwards
 		viewportPos = ImGui::GetCursorScreenPos();
 
 		auto screenToPixel = [&](float px, float py, float& outX, float& outY) {
+			//we subtract the viewport position to get the coordinates relative to the viewport
 			outX = px - viewportPos.x;
+			//we invert the y coordinate to match the openGl coordinate system
 			outY = (viewportPos.y + h) - py; 
 			};
 
 		//line drawing mode function 
+		//if the user is in the drawing line mode and clicks the canvas without touching the Imgui Interface 
+		
 		if (drawLineMode && !ImGui::GetIO().WantCaptureMouse && ImGui::IsMouseClicked(0)) {
+			//then we prepare the first point coordinates of the line
 			ImVec2 mousePos = ImGui::GetMousePos();
-
-			bool offCanvas = mousePos.x < viewportPos.x ||
+			//we check if the mouse click is outside the canvas, if it is we ignore it
+			bool offCanvas =
+				//right of the canvas
+				mousePos.x < viewportPos.x ||
+				//left of the canvas
 				mousePos.x > viewportPos.x + w ||
+				//below canvas
 				mousePos.y < viewportPos.y ||
+				//above canvas
 				mousePos.y > viewportPos.y + h;
-
+			//if the click is inside the canvas we process it
 			if (!offCanvas) {
+				
 				if (!waitingSecondClick) {
+					//we convert the screen coordinates to pixel coordinates relative to the viewport
+					// and store them as the first point of the line
 					screenToPixel(mousePos.x, mousePos.y, mouseX1, mouseY1);
 					waitingSecondClick	 = true;
 				}
 				else {
+					//we convert the screen coordinates to pixel coordinates relative to the viewport
+					 // and store them as the second point of the line
 					screenToPixel(mousePos.x, mousePos.y, mouseX2, mouseY2);
 
+					//bresenham line callback
 					std::vector<float> newLine = bresenhamLine(mouseX1, mouseY1, mouseX2, mouseY2, w, h);
+					
 					insertWithColor(newLine);
-					//allPts.insert(allPts.end(), newLine.begin(), newLine.end());
+					
 
 					glBindVertexArray(VAO1);
 					glBindBuffer(GL_ARRAY_BUFFER, VBO1);
 					glBufferData(GL_ARRAY_BUFFER, allPts.size() * sizeof(float), allPts.data(), GL_DYNAMIC_DRAW);
 					glBindVertexArray(0);
-
+					//we update the points to the VBO
 					linePointCount = (GLsizei)(allPts.size() / 5);
+					// we set waitingSecondClick to false to prepare for the next line while the 
+					//button is still active
 					waitingSecondClick = false;
 					
 				}
@@ -219,6 +252,7 @@ int main()
 		}
 		//circle drawing mode function
 		if (drawCircleMode && !ImGui::GetIO().WantCaptureMouse && ImGui::IsMouseClicked(0)) {
+
 			ImVec2 mousePos = ImGui::GetMousePos();
 
 			bool offCanvas = mousePos.x < viewportPos.x ||
@@ -226,9 +260,14 @@ int main()
 				mousePos.y < viewportPos.y ||
 				mousePos.y > viewportPos.y + h;
 			if (!offCanvas) {
+				//everytime we click we rewrite the variables px and py
 				float px, py;
+				//we convert the screen coordinates to pixel coordinates relative to the viewport
 				screenToPixel(mousePos.x, mousePos.y, px, py);	
 				if (!waitingCircleRadius) {
+					//when they're stored,
+					// we prepare the center of the circle and wait for the second click to determine the radius
+					//the radius is goint to rewrite the px and py coordinates
 					circleCx = px;
 					circleCy = py;
 					waitingCircleRadius = true;
@@ -237,10 +276,14 @@ int main()
 					//function to calculate the distance between 2 points, which
 					// is the radius of the circle
 					float radius = std::sqrt((px - circleCx) * (px - circleCx) + (py - circleCy) * (py - circleCy));
-					std::vector<float> newCircle = CircleMidPoint(circleCx, circleCy, radius, w, h);
-					insertWithColor(newCircle);
 
-					//allPts.insert(allPts.end(), newCircle.begin(), newCircle.end());
+					//circle middle point callback
+					std::vector<float> newCircle = CircleMidPoint(circleCx, circleCy, radius, w, h);
+					// we insert the new circle points with the current color to the allPts vector
+					insertWithColor(newCircle);
+					
+
+
 
 					glBindVertexArray(VAO1);
 					glBindBuffer(GL_ARRAY_BUFFER, VBO1);
@@ -255,7 +298,8 @@ int main()
 		
 		ImGui::End();
 		shaderProgram.Activate();
-
+		//we call the function to set the point size in the shader, so we can change it dinamically with the ImGui slider
+		glPointSize(pointSize);
 		if (linePointCount > 0) {
 			//activates the configuration of the vertex data
 			glBindVertexArray(VAO1);
