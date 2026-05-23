@@ -2,6 +2,13 @@ C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\code\main.c
 C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\Bresenham.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\Bresenham.obj
 C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\CircleMidPoint.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\CircleMidPoint.obj
 C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\glad.c;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\glad.obj
+C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\backends\imgui_impl_glfw.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\imgui_impl_glfw.obj
+C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\backends\imgui_impl_opengl3.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\imgui_impl_opengl3.obj
+C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\imgui.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\imgui.obj
+C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\imgui_demo.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\imgui_demo.obj
+C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\imgui_draw.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\imgui_draw.obj
+C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\imgui_tables.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\imgui_tables.obj
+C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\imgui_widgets.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\imgui_widgets.obj
 C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\mouse_Callback.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\mouse_Callback.obj
 C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\shaderClass.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\shaderClass.obj
 C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\VAO.cpp;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\x64\Debug\VAO.obj

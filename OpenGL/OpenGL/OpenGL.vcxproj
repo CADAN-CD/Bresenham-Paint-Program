@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\Libraries\include\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\backends;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\Libraries\include\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +127,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\Libraries\include\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui\backends;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\OpenGL\ImGui;C:\Users\CD\Desktop\Programming\OpenGL-Introduction\Bresenham\OpenGL\Libraries\include\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +145,13 @@
     <ClCompile Include="Bresenham.cpp" />
     <ClCompile Include="CircleMidPoint.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="ImGui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="ImGui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="ImGui\imgui.cpp" />
+    <ClCompile Include="ImGui\imgui_demo.cpp" />
+    <ClCompile Include="ImGui\imgui_draw.cpp" />
+    <ClCompile Include="ImGui\imgui_tables.cpp" />
+    <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="mouse_Callback.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="VAO.cpp" />
@@ -155,6 +162,14 @@
     <ClInclude Include="..\Libraries\include\include\KHR\khrplatform.h" />
     <ClInclude Include="bresenham.h" />
     <ClInclude Include="CircleMidPoint.h" />
+    <ClInclude Include="ImGui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="ImGui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="ImGui\imconfig.h" />
+    <ClInclude Include="ImGui\imgui.h" />
+    <ClInclude Include="ImGui\imgui_internal.h" />
+    <ClInclude Include="ImGui\imstb_rectpack.h" />
+    <ClInclude Include="ImGui\imstb_textedit.h" />
+    <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="mouse_Callback.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="VAO.h" />
