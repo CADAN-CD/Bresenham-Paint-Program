@@ -15,6 +15,28 @@
 #include "../OpenGL/ImGui/backends/imgui_impl_opengl3.h"
 using namespace std;
 
+// function to fill the circle points using the circle equation and the distance from the center to the circumference
+
+std::vector<float> fillCirclePoints(float cx, float cy, float radius, int width, int height) {
+	std::vector<float> pts;
+	// we iterate over a square that contains the circle and check if each point is inside
+	// the circle begins from the bottom of the circle and goes up to the top
+	// we increase y by 1 pixel  
+	for (float y = cy - radius; y <= cy + radius; y += 1.0f) {
+		//distance from the center to the circumference in the y axis
+		float dy = y - cy;
+		//distance from the center to the circumference in the x axis using pithagorean theorem
+		float dx = std::sqrt(radius * radius - dy * dy);
+		// we iterate over the points in the x axis that are inside the circle for the current y
+		for (float x = cx - dx; x <= cx + dx; x += 1.0f) {
+			//converts every point to NCD coordinates and adds it to the vector
+			pts.push_back((x / width) * 2.0f - 1.0f);
+			pts.push_back((y / height) * 2.0f - 1.0f);
+		}
+	}
+	return pts;
+}
+
 int main()
 {
 
@@ -70,16 +92,16 @@ int main()
 	glBindVertexArray(VAO1);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO1);
 	// attribute 0: the position (x, y)
-	//the stride changes to 5 * sizeof(float) because we have 5 floats for each vertex (x, y, r, g, b)
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	//the stride changes to 6 * sizeof(float) because we have 6 floats for each vertex (x, y, r, g, b, size)
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	//we activate the attribute
 	glEnableVertexAttribArray(0);
 	
 	//atribute 1 : the color (r, g, b)
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	//atribute 2 : the size of the point
-	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(5 * sizeof(float)));
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 	//unbind
@@ -100,7 +122,7 @@ int main()
 	//unbind for safety:) bc we already save the configurations
 	glBindVertexArray(0);
 	//we divide in two because we're using a pair of coordinates
-	linePointCount = (GLsizei)(allPts.size() / 5);
+	linePointCount = (GLsizei)(allPts.size() / 6);
 
 	//ImGui setup
 	IMGUI_CHECKVERSION();
@@ -115,6 +137,7 @@ int main()
 	//ImGui variables to control the state of the application
 	static bool  drawLineMode = false;
 	static bool drawCircleMode = false;
+	static bool fillCircleMode = false;
 
 		//variables to control the state of the line and circle drawing modes and global variables related to the mouse position and the viewport position
 	static bool  waitingSecondClick = false;
@@ -141,6 +164,7 @@ int main()
 			allPts.push_back(drawColor[0]);   // r
 			allPts.push_back(drawColor[1]);   // g
 			allPts.push_back(drawColor[2]);   // b
+			allPts.push_back(pointSize);      // size
 		}
 		};
 	while (!glfwWindowShouldClose(window)) {
@@ -183,6 +207,9 @@ int main()
 			drawLineMode = false;
 			
 		}
+		ImGui::SameLine();
+		ImGui::Checkbox("Fill Circle", &fillCircleMode);
+
 				//bresenham algorithm call
 		if (ImGui::Button("Draw Line")) {
 			drawLineMode = true;
@@ -242,7 +269,7 @@ int main()
 					glBufferData(GL_ARRAY_BUFFER, allPts.size() * sizeof(float), allPts.data(), GL_DYNAMIC_DRAW);
 					glBindVertexArray(0);
 					//we update the points to the VBO
-					linePointCount = (GLsizei)(allPts.size() / 5);
+					linePointCount = (GLsizei)(allPts.size() / 6);
 					// we set waitingSecondClick to false to prepare for the next line while the 
 					//button is still active
 					waitingSecondClick = false;
@@ -278,28 +305,27 @@ int main()
 					float radius = std::sqrt((px - circleCx) * (px - circleCx) + (py - circleCy) * (py - circleCy));
 
 					//circle middle point callback
-					std::vector<float> newCircle = CircleMidPoint(circleCx, circleCy, radius, w, h);
+					std::vector<float> newCircle = fillCircleMode ? fillCirclePoints(circleCx, circleCy, radius, w, h)
+					: CircleMidPoint(circleCx, circleCy, radius, w, h);
 					// we insert the new circle points with the current color to the allPts vector
 					insertWithColor(newCircle);
-					
-
-
-
 					glBindVertexArray(VAO1);
 					glBindBuffer(GL_ARRAY_BUFFER, VBO1);
 					glBufferData(GL_ARRAY_BUFFER, allPts.size() * sizeof(float), allPts.data(), GL_DYNAMIC_DRAW);
 					glBindVertexArray(0);
 
-					linePointCount = (GLsizei)(allPts.size() / 5);
+					linePointCount = (GLsizei)(allPts.size() / 6);
 					waitingCircleRadius = false;
 				}
 			}
 		}
 		
+		
 		ImGui::End();
+		
 		shaderProgram.Activate();
 		//we call the function to set the point size in the shader, so we can change it dinamically with the ImGui slider
-		glPointSize(pointSize);
+	
 		if (linePointCount > 0) {
 			//activates the configuration of the vertex data
 			glBindVertexArray(VAO1);
